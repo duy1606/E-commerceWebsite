@@ -4,14 +4,15 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleResponse {
+public class UserResponse {
     String id;
-    String typeOfRole;
-    String description;
-    Set<PermissionResponse> permissions;
-    String user;
+    String name;
+    int age;
+    String address;
+    String typeOfUser;
+    String phoneNumber;
+    String email;
+    boolean gender;
 }
