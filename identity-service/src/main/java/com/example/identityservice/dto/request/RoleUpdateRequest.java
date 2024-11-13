@@ -1,4 +1,4 @@
-package com.example.identityservice.dto.response;
+package com.example.identityservice.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,9 +8,6 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountResponse {
-    String id;
-    String username;
-    List<RoleResponse> roles;
-    String user;
+public class RoleUpdateRequest {
+    List<String> permissions;
 }

@@ -1,11 +1,13 @@
 package com.example.identityservice.mapper;
 
 import com.example.identityservice.dto.request.UserCreateRequest;
+import com.example.identityservice.dto.request.UserUpdateRequest;
 import com.example.identityservice.dto.response.UserResponse;
 import com.example.identityservice.entity.User;
 import com.example.identityservice.enums.TypeOfUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -13,6 +15,8 @@ public interface UserMapper {
     User toUser(UserCreateRequest request);
     @Mapping(target = "typeOfUser",source = "typeOfUser",qualifiedByName = "enumToString")
     UserResponse toUserResponse(User user);
+    @Mapping(target = "typeOfUser",source = "typeOfUser",qualifiedByName = "stringToEnum")
+    void updateUser(@MappingTarget User user, UserUpdateRequest request);
     // Chuyển từ enum sang String
     @org.mapstruct.Named("enumToString")
     default String enumToString(TypeOfUser user) {

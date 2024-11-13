@@ -1,6 +1,7 @@
 package com.example.identityservice.controller;
 
 import com.example.identityservice.dto.request.UserCreateRequest;
+import com.example.identityservice.dto.request.UserUpdateRequest;
 import com.example.identityservice.dto.response.ApiResponse;
 import com.example.identityservice.dto.response.UserResponse;
 import com.example.identityservice.service.UserService;
@@ -27,6 +28,19 @@ public class UserController {
     public ApiResponse<UserResponse> createUser(@RequestBody UserCreateRequest request){
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
+                .build();
+    }
+    @DeleteMapping("/{userID}")
+    public ApiResponse<UserResponse> deleteUser(@PathVariable String userID){
+        userService.deleteUser(userID);
+        return ApiResponse.<UserResponse>builder()
+                .message("User with ID " + userID + " deleted")
+                .build();
+    }
+    @PutMapping("/{userID}")
+    public ApiResponse<UserResponse> updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest request){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.updateUser(userID, request))
                 .build();
     }
 }

@@ -13,5 +13,4 @@ public class RoleResponse {
     String typeOfRole;
     String description;
     Set<PermissionResponse> permissions;
-    String user;
 }
