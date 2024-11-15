@@ -15,6 +15,7 @@ public enum ErrorCode {
     NOT_EXISTED(1003, "Not Existed", HttpStatus.BAD_REQUEST),
     LOGIN_FAIL(1004, "Login Fail", HttpStatus.UNAUTHORIZED),
     INVALID_TOKEN(1005, "Token Is Invalid", HttpStatus.UNAUTHORIZED),
+    OUT_OF_STOCK(1007, "Product is out of stock", HttpStatus.BAD_REQUEST),
     FORBIDDEN(1006, "Access Is Not Allowed", HttpStatus.FORBIDDEN);
     int code;
     String message;

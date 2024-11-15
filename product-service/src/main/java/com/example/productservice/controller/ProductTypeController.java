@@ -1,6 +1,7 @@
 package com.example.productservice.controller;
 
 import com.example.productservice.dto.request.ProductTypeCreateRequest;
+import com.example.productservice.dto.request.ProductTypeUpdateRequest;
 import com.example.productservice.dto.response.ApiResponse;
 import com.example.productservice.dto.response.ProductTypeResponse;
 import com.example.productservice.entity.ProductType;
@@ -28,6 +29,25 @@ public class ProductTypeController {
     public ApiResponse<ProductTypeResponse> createProductType(@RequestBody ProductTypeCreateRequest request){
         return ApiResponse.<ProductTypeResponse>builder()
                 .result(productTypeService.createProductType(request))
+                .build();
+    }
+    @GetMapping("/productTypeID")
+    public ApiResponse<ProductTypeResponse> getProductTypeById(@PathVariable String productTypeID){
+        return ApiResponse.<ProductTypeResponse>builder()
+                .result(productTypeService.getProductTypeByID(productTypeID))
+                .build();
+    }
+    @PutMapping("/{productTypeID}")
+    public ApiResponse<ProductTypeResponse> updateProductType(@PathVariable String productTypeID, @RequestBody ProductTypeUpdateRequest request){
+        return ApiResponse.<ProductTypeResponse>builder()
+                .result(productTypeService.updateProductType(productTypeID, request))
+                .build();
+    }
+    @DeleteMapping("/{productTypeID}")
+    public ApiResponse<?> deleteProductType(@PathVariable String productTypeID){
+        productTypeService.deleteProductType(productTypeID);
+        return ApiResponse.builder()
+                .message("ProductType with ID " + productTypeID + " was deleted")
                 .build();
     }
 }

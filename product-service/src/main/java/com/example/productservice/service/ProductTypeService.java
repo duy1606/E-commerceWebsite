@@ -33,4 +33,10 @@ public class ProductTypeService {
        productTypeMapper.updateProductType(request,productType);
        return productTypeMapper.toProductTypeResponse(productTypeRepository.save(productType));
     }
+    public void deleteProductType(String id){
+        productTypeRepository.deleteById(id);
+    }
+    public ProductTypeResponse getProductTypeByID(String id){
+        return productTypeMapper.toProductTypeResponse(productTypeRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.NOT_FOUND)));
+    }
 }
