@@ -20,5 +20,4 @@ public class Account {
     Set<Role> roles;
     @OneToOne
     User user;
-
 }

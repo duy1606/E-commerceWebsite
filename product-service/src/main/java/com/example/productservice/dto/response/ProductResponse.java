@@ -18,5 +18,5 @@ public class ProductResponse {
     String description;
     double avgStar;
     List<Variant> variants;
-    ProductTypeResponse productType;
+    String productType;
 }

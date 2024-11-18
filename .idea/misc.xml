@@ -17,7 +17,17 @@
         <option value="$PROJECT_DIR$/product-service/pom.xml" />
         <option value="$PROJECT_DIR$/cart-service/pom.xml" />
         <option value="$PROJECT_DIR$/identity-service/pom.xml" />
+        <option value="$PROJECT_DIR$/EntitySend/pom.xml" />
+        <option value="$PROJECT_DIR$/dto-kafka/pom.xml" />
+        <option value="$PROJECT_DIR$/dto-common/pom.xml" />
+        <option value="$PROJECT_DIR$/voucher-service/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/EntitySend/pom.xml" />
+        <option value="$PROJECT_DIR$/dto-kafka/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="22" project-jdk-type="JavaSDK">

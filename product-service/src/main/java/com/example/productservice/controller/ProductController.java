@@ -59,9 +59,7 @@ public class ProductController {
                 .build();
     }
     @PutMapping("/sell")
-    public ApiResponse<ProductResponse> sellProduct(@RequestBody SellProductRequest request) {
-        return ApiResponse.<ProductResponse>builder()
-                .result(productService.sellProduct(request))
-                .build();
+    public ApiResponse<?> sellProduct(@RequestBody SellProductRequest request) {
+        return productService.sellProduct(request);
     }
 }

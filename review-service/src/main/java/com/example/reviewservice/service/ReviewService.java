@@ -29,7 +29,7 @@ public class ReviewService {
         return reviewRepository.findAll().stream().map(reviewMapper::toReviewResponse).toList();
     }
     public List<ReviewResponse> getReviewsByProductId(String productId){
-        List<Review> reviews = reviewRepository.findAllByProductId(productId);
+        List<Review> reviews = reviewRepository.findAllByProductID(productId);
         return reviews.stream().map(reviewMapper::toReviewResponse).toList();
     }
     public List<ReviewResponse> getReviewsByAccountID(String accountID){

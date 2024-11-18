@@ -21,6 +21,7 @@ import java.util.List;
 public class ProductTypeService {
     ProductTypeRepository productTypeRepository;
     ProductTypeMapper productTypeMapper;
+
     public ProductTypeResponse createProductType(ProductTypeCreateRequest request){
         ProductType productType = productTypeMapper.toProductType(request);
         return productTypeMapper.toProductTypeResponse(productTypeRepository.save(productType));

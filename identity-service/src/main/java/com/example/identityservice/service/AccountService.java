@@ -16,6 +16,7 @@ import com.example.identityservice.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class AccountService {
     AccountRepository accountRepository;
     AccountMapper accountMapper;
     PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+    KafkaTemplate<String, String> kafkaTemplate;
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
@@ -47,7 +49,9 @@ public class AccountService {
        account.setRoles(roleSet);
        User user =userRepository.findById(request.getUser()).orElseThrow(()-> new AppException(ErrorCode.NOT_FOUND));
        account.setUser(user);
-       return accountMapper.toAccountResponse(accountRepository.save(account));
+       accountRepository.save(account);
+       kafkaTemplate.send("account-create",account.getId());
+       return accountMapper.toAccountResponse(account);
     }
     public List<AccountResponse> getAllAccounts() {
         return accountRepository.findAll().stream().map(accountMapper::toAccountResponse).toList();
