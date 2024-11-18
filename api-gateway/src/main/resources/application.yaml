@@ -20,7 +20,7 @@ spring:
 
             -  StripPrefix=2
         - id: product_service
-          uri: http://localhost:8083
+          uri: http://localhost:8081
           predicates:
             - Path=${app.api-prefix}/product-service/**
           filters:
@@ -47,5 +47,11 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=${app.api-prefix}/voucher-service/**
+          filters:
+            - StripPrefix=2
+        - id: review_service
+          uri: http://localhost:8086
+          predicates:
+            - Path=${app.api-prefix}/review-service/**
           filters:
             - StripPrefix=2
