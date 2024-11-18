@@ -40,7 +40,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (ispublicEndPoint(exchange.getRequest())) {
-            return chain.filter(exchange);
+            return chain.filter(exchange)
+                    .onErrorResume(throwable -> serviceUnavailable(exchange.getResponse()));
+
         }
         if (CollectionUtils.isEmpty(authHeader)) {
             return unauthenticated(exchange.getResponse());
@@ -48,7 +50,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String token = authHeader.get(0).replace("Bearer", "").trim();
         return identityService.introspect(token).flatMap(introspectResponseApiResponse -> {
             if (introspectResponseApiResponse.getResult().isValid()) {
-                return chain.filter(exchange);
+                return chain.filter(exchange)
+                        .onErrorResume(throwable -> serviceUnavailable(exchange.getResponse()));
             } else {
                 return unauthenticated(exchange.getResponse());
             }
@@ -75,7 +78,22 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json");
         return response.writeWith(Mono.just(response.bufferFactory().wrap(body.getBytes())));
     }
-
+    Mono<Void> serviceUnavailable(ServerHttpResponse response) {
+        ApiResponse<?> apiResponse = ApiResponse.builder()
+                .code(1503)
+                .message("Service Unavailable")
+                .build();
+        response.setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+        String body;
+        try {
+            // Chuyển đổi ApiResponse thành chuỗi JSON
+            body = objectMapper.writeValueAsString(apiResponse);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error serializing ApiResponse", e);
+        }
+        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return response.writeWith(Mono.just(response.bufferFactory().wrap(body.getBytes())));
+    }
     boolean ispublicEndPoint(ServerHttpRequest request) {
         return Arrays.stream(publicEndPoint).anyMatch(s -> request.getURI().getPath().matches(apiPrefix + s));
 
