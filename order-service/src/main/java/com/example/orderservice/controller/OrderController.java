@@ -4,6 +4,7 @@ import com.example.orderservice.dto.request.OrderRequest;
 import com.example.orderservice.dto.response.ApiResponse;
 import com.example.orderservice.dto.response.OrderResponse;
 import com.example.orderservice.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +21,7 @@ public class OrderController {
     OrderService orderService;
 
     @PostMapping("/create")
-    ApiResponse<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
+    ApiResponse<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) throws JsonProcessingException {
         return orderService.saveOrder(orderRequest);
     }
 

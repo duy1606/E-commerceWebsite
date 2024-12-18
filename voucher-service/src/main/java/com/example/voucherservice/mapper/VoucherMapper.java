@@ -4,7 +4,6 @@ import com.example.voucherservice.dto.request.UpdateVoucherRequest;
 import com.example.voucherservice.dto.request.VoucherRequest;
 import com.example.voucherservice.dto.response.VoucherResponse;
 import com.example.voucherservice.entity.Voucher;
-import com.example.voucherservice.repository.VoucherRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

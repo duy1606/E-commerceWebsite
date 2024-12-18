@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,28 +58,38 @@ public class VoucherService {
                 .build();
     }
 
-    public ApiResponse<VoucherResponse> useVoucher(String voucherID) {
-        final Voucher[] voucher1 = new Voucher[1];
-        // Đặt request vào hàng đợi (executor) để xử lý tuần tự
-        executorService.submit(() -> {
-            var voucher = voucherRepository.findById(voucherID)
-                    .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
-
-            log.info(voucher.getQuantity() + "");
-            if (voucher.getQuantity() <= 0) {
-                log.info("Lỗi");
-                throw new AppException(ErrorCode.VOUCHER_OUT_OF_STOCK);
+    public ApiResponse<?> useVoucher(String voucherID) {
+        synchronized (voucherID.intern()){
+            // Tìm voucher, nếu không có thì trả về response với thông báo lỗi
+            Optional<Voucher> optionalVoucher = voucherRepository.findById(voucherID);
+            if (optionalVoucher.isEmpty()) {
+                return ApiResponse.builder()
+                        .code(404) // Mã lỗi phù hợp, ví dụ 404 Not Found
+                        .result("Voucher not found")
+                        .build();
             }
 
+            Voucher voucher = optionalVoucher.get();
+
+            // Kiểm tra nếu voucher đã hết số lượng
+            if (voucher.getQuantity() <= 0) {
+                return ApiResponse.builder()
+                        .code(4001) // Mã lỗi tùy chỉnh
+                        .result("Voucher out of stock")
+                        .build();
+            }
+
+            // Giảm số lượng voucher và lưu lại
             voucher.setQuantity(voucher.getQuantity() - 1);
+            voucher = voucherRepository.save(voucher);
 
-            voucher1[0] = voucherRepository.save(voucher); // Lưu voucher với số lượng đã giảm
-        });
-
-        return ApiResponse.<VoucherResponse>builder()
-                .result(voucherMapper.toVoucherResponse(voucher1[0])) // Trả về thông tin response theo yêu cầu
-                .build();
+            // Trả về thông tin voucher đã cập nhật
+            return ApiResponse.<VoucherResponse>builder()
+                    .result(voucherMapper.toVoucherResponse(voucher))
+                    .build();
+        }
     }
+
 
     public ApiResponse<VoucherResponse> updateVoucherQuantity(String voucherID, UpdateVoucherQuantityRequest request){
         var voucher = voucherRepository.findById(voucherID)

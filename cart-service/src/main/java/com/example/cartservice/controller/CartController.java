@@ -36,7 +36,7 @@ public class CartController {
         return cartService.getAll();
     }
 
-    @GetMapping("/{accountID}")
+    @GetMapping("/get/{accountID}")
     ApiResponse<CartResponse> getByAccountID(@PathVariable String accountID){
         return cartService.getByAccountID(accountID);
     }
@@ -53,7 +53,9 @@ public class CartController {
 
     @DeleteMapping("/delete-item/{accountID}")
     ApiResponse<CartResponse> deleteItem(@PathVariable String accountID,
-                                         @RequestBody DeleteCartItemRequest request){
+                                         @RequestParam String productID){
+        DeleteCartItemRequest request = new DeleteCartItemRequest();
+        request.setProductID(productID);
         return cartService.deleteItem(accountID, request);
     }
     @KafkaListener(topics = "account-create")

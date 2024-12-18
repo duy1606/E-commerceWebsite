@@ -11,6 +11,10 @@ import lombok.experimental.FieldDefaults;
 public class AddToCartRequest {
     String productID;
     String productName;
+    String productImage;
+    String size;
+    String color;
     int quantity;
     double productPrice;
+    int inventoryQuantity;
 }

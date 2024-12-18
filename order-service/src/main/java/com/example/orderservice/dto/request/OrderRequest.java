@@ -18,9 +18,11 @@ public class OrderRequest {
     LocalDateTime dateCreated;
     PaymentStatus payment;
     double totalPrice;
-    OrderStatus status;
+    String consigneeName;
+    String consigneeEmail;
+    String consigneePhone;
     String address;
-    String customerID;
+    String accountID;
     String voucherID;
     List<OrderDetail> orderDetails;
 }

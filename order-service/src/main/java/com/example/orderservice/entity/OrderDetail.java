@@ -14,5 +14,7 @@ public class OrderDetail {
     String productID;
     String productName;
     int quantity;
+    String color;
+    String size;
     double productPrice;
 }

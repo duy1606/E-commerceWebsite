@@ -1,6 +1,7 @@
 package com.example.cartservice.mapper;
 
 import com.example.cartservice.dto.request.AddToCartRequest;
+import com.example.cartservice.dto.request.DeleteCartItemRequest;
 import com.example.cartservice.entity.CartItem;
 import org.mapstruct.Mapper;
 
@@ -8,4 +9,5 @@ import org.mapstruct.Mapper;
 public interface CartItemMapper {
 
     CartItem toCartItem(AddToCartRequest request);
+
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public class VoucherController {
     VoucherService voucherService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     ApiResponse<List<VoucherResponse>> getAll(){
         return voucherService.getAll();
     }
@@ -45,7 +45,7 @@ public class VoucherController {
     }
 
     @PutMapping("/use-voucher/{voucherID}")
-    ApiResponse<VoucherResponse> updateVoucher(@PathVariable String voucherID){
+    ApiResponse<?> updateVoucher(@PathVariable String voucherID){
         return voucherService.useVoucher(voucherID);
     }
 

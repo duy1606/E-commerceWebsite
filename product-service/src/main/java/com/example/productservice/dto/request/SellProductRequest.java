@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SellProductRequest {
-    String id;
+    String productID;
     Size size;
     String color;
     int quantity;

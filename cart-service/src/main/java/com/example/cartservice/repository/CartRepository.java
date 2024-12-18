@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends MongoRepository<Cart, String> {
-
     Optional<Cart> findByAccountID(String accountID);
 }
