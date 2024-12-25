@@ -1,0 +1,14 @@
+package com.example.orderservice.entity;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Province {
+    String idProvince;
+    String name;
+}
