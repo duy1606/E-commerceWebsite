@@ -13,5 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class OrderSuccessfully {
     String accountID;
-    List<String> listProductID;
+    String productID;
+    String color;
+    String size;
 }

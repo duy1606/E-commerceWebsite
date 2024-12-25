@@ -8,9 +8,15 @@ import com.example.dtocommon.kafka.Order_Voucher.UseVoucherEvent;
 import com.example.dtocommon.kafka.Order_Voucher.UseVoucherResultEvent;
 import com.example.orderservice.entity.OrderDetail;
 import com.example.orderservice.enums.OrderStatus;
+import com.example.orderservice.enums.PaymentStatus;
 import com.example.orderservice.kafka.config.JsonConverter;
 import com.example.orderservice.kafka.producer.OrderProducer;
 import com.example.orderservice.repository.OrderRepository;
+import com.example.orderservice.vnpay.controller.PaymentController;
+import com.example.orderservice.vnpay.dto.PaymentRequest;
+import com.example.orderservice.vnpay.service.PaymentService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,30 +41,36 @@ public class OrderConsumer {
     OrderProducer orderProducer;
 
     SimpMessagingTemplate messagingTemplate;
-
+    PaymentService paymentService;
 
     //    lắng nghe use-voucher
     @KafkaListener(topics = "use-voucher-response", groupId = "order-group")
-    public void handleRollbackOrder(String data) {
+    public void handleRollbackOrder(String data) throws UnsupportedEncodingException {
         UseVoucherResultEvent event = jsonConverter.fromJson(data, UseVoucherResultEvent.class);
 
         var order = orderRepository.findById(event.getOrderID())
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if (event.isResult()) {
-            order.setStatus(OrderStatus.ORDERED);
-            orderRepository.save(order);
-
             //            send notification to font-end
-            messagingTemplate.convertAndSend("/topic/orders", "Order successfully processed");
-
+           if(order.getPayment().toString().equals("VN_PAY")){
+               orderRepository.save(order);
+               messagingTemplate.convertAndSend("/topic/orders", "Order successfully processed," + order.getId() + "," + order.getTotalPrice());
+           }else{
+               order.setStatus(OrderStatus.ORDERED);
+               orderRepository.save(order);
+               messagingTemplate.convertAndSend("/topic/orders", "Order successfully processed" );
+           }
 //            send event order successfully to cart
-            OrderSuccessfully orderSuccessfully = OrderSuccessfully.builder()
-                    .accountID(order.getAccountID())
-                    .listProductID(order.getOrderDetails().stream()
-                            .map(OrderDetail::getProductID).toList())
-                    .build();
-            orderProducer.sendOrderSuccessfullyToCart(orderSuccessfully);
+            order.getOrderDetails().forEach(orderDetail -> {
+                OrderSuccessfully orderSuccessfully = OrderSuccessfully.builder()
+                        .accountID(order.getAccountID())
+                        .productID(orderDetail.getProductID())
+                        .color(orderDetail.getColor())
+                        .size(orderDetail.getSize())
+                        .build();
+                orderProducer.sendOrderSuccessfullyToCart(orderSuccessfully);
+            });
 
         } else {
 //            rollback product
@@ -78,7 +93,7 @@ public class OrderConsumer {
             orderProducer.sendRollBackProduct(sellProductEvent);
 
             orderRepository.delete(order);
-            messagingTemplate.convertAndSend("/topic/orders", "Order creation failed");
+            messagingTemplate.convertAndSend("/topic/orders", "Fail(Voucher sold out)");
         }
     }
 
@@ -89,6 +104,33 @@ public class OrderConsumer {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         if (event.isResult()) {
+//            neu khong dung voucher
+            if (order.getVoucherID().equals("") || order.getVoucherID() == null) {
+
+                //            send notification to font-end
+                if(order.getPayment().toString().equals("VN_PAY")){
+                    orderRepository.save(order);
+                    messagingTemplate.convertAndSend("/topic/orders", "Order successfully processed," + order.getId() + "," + order.getTotalPrice());
+                }else{
+                    order.setStatus(OrderStatus.ORDERED);
+                    orderRepository.save(order);
+                    messagingTemplate.convertAndSend("/topic/orders", "Order successfully processed" );
+                }
+
+//            send event order successfully to cart
+                order.getOrderDetails().forEach(orderDetail -> {
+                    OrderSuccessfully orderSuccessfully = OrderSuccessfully.builder()
+                            .accountID(order.getAccountID())
+                            .productID(orderDetail.getProductID())
+                            .color(orderDetail.getColor())
+                            .size(orderDetail.getSize())
+                            .build();
+                    orderProducer.sendOrderSuccessfullyToCart(orderSuccessfully);
+                });
+
+                return;
+            }
+
             UseVoucherEvent useVoucherEvent = UseVoucherEvent.builder()
                     .orderID(order.getId())
                     .voucherID(order.getVoucherID())
@@ -96,6 +138,7 @@ public class OrderConsumer {
             orderProducer.sendOrderSuccessToVoucher(useVoucherEvent);
         } else {
             orderRepository.delete(order);
+            messagingTemplate.convertAndSend("/topic/orders", "Fail(Product sold out)");
         }
     }
 }

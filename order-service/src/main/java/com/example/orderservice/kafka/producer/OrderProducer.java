@@ -1,6 +1,7 @@
 package com.example.orderservice.kafka.producer;
 
 import com.example.dtocommon.kafka.Order_Cart.OrderSuccessfully;
+import com.example.dtocommon.kafka.Order_Voucher.RollbackVoucherEvent;
 import com.example.dtocommon.kafka.Order_Voucher.UseVoucherEvent;
 import com.example.dtocommon.kafka.Order_Voucher.UseVoucherResultEvent;
 import com.example.dtocommon.kafka.Order_Product.SellProductEvent;
@@ -23,9 +24,13 @@ public class OrderProducer {
     final static String topic_sell_product = "sell-product";
     final static String topic_rollback_product = "rollback-product";
     final static String topic_order_successfully= "order-successfully";
+    final static String topic_rollback_voucher= "rollback-voucher";
 
     public void sendOrderSuccessToVoucher(UseVoucherEvent orderVoucherEvent){
         kafkaTemplate.send(topic_create_order, jsonConverter.toJson(orderVoucherEvent));
+    }
+    public void sendRollbackVoucher(RollbackVoucherEvent rollbackVoucherEvent){
+        kafkaTemplate.send(topic_rollback_voucher, jsonConverter.toJson(rollbackVoucherEvent));
     }
 
     public void sendCreateOrderToProduct(SellProductEvent event){

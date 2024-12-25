@@ -15,10 +15,10 @@ public class VoucherRequest {
     String description;
     String image;
     double discountAmount;
-    boolean isPercentage;
+    boolean percentage;
     Double minimumOrderValue;
     boolean freeShip;
     LocalDate expirationDate;
-    int quantity;;
+    int quantity;
 
 }

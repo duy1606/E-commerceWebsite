@@ -3,6 +3,7 @@ package com.example.voucherservice.dto.response;
 import java.time.LocalDate;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,7 +18,7 @@ public class VoucherResponse {
     String description;
     String image;
     double discountAmount;
-    boolean isPercentage;
+    boolean percentage;
     Double minimumOrderValue;
     boolean freeShip;
     LocalDate expirationDate;

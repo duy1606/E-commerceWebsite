@@ -53,11 +53,13 @@ public class CartController {
 
     @DeleteMapping("/delete-item/{accountID}")
     ApiResponse<CartResponse> deleteItem(@PathVariable String accountID,
-                                         @RequestParam String productID){
-        DeleteCartItemRequest request = new DeleteCartItemRequest();
-        request.setProductID(productID);
+                                         @RequestParam String productID,
+                                         @RequestParam String color,
+                                         @RequestParam String size){
+        DeleteCartItemRequest request = new DeleteCartItemRequest(productID, color, size);
         return cartService.deleteItem(accountID, request);
     }
+
     @KafkaListener(topics = "account-create")
     public void listenAccountCreate(String accountID){
         CartCreationRequest request = new CartCreationRequest();

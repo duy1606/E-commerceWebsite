@@ -31,9 +31,9 @@ public class CartConsumer {
 
 //        delete cart item
         String accountID = orderSuccessfully.getAccountID();
-        orderSuccessfully.getListProductID().stream()
-                .forEach(productID -> {
-                    cartService.deleteItem(accountID, new DeleteCartItemRequest(productID));
-                });
+        String productID = orderSuccessfully.getProductID();
+        String color = orderSuccessfully.getColor();
+        String size = orderSuccessfully.getSize();
+        cartService.deleteItem(accountID, new DeleteCartItemRequest(productID, color, size));
     }
 }

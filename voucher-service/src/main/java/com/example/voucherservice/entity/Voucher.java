@@ -1,5 +1,6 @@
 package com.example.voucherservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,7 +24,7 @@ public class Voucher {
     String description;
     String image;
     double discountAmount; // mức giảm(tiền hoặc % giảm)
-    boolean isPercentage; // mức giảm là % hoặc tiền
+    boolean percentage; // mức giảm là % hoặc tiền
     Double minimumOrderValue; //giá trị tối thiểu của đơn hàng để áp dụng giảm
     boolean freeShip;
     LocalDate expirationDate;

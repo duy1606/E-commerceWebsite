@@ -10,5 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EditCartItemQuantityRequest {
     String productID;
+    String color;
+    String size;
     int quantity;
 }

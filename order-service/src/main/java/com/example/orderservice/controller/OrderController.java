@@ -1,6 +1,8 @@
 package com.example.orderservice.controller;
 
 import com.example.orderservice.dto.request.OrderRequest;
+import com.example.orderservice.dto.request.OrderRollbackRequest;
+import com.example.orderservice.dto.request.UpdateStatusRequest;
 import com.example.orderservice.dto.response.ApiResponse;
 import com.example.orderservice.dto.response.OrderResponse;
 import com.example.orderservice.service.OrderService;
@@ -28,5 +30,15 @@ public class OrderController {
     @GetMapping
     ApiResponse<List<OrderResponse>> getOrder(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return orderService.findByDateOrder(date);
+    }
+
+    @PostMapping("/rollback")
+    ApiResponse<?> rollbackOrder(@RequestBody OrderRollbackRequest orderRequest) throws JsonProcessingException {
+        return orderService.rollbackOrder(orderRequest);
+    }
+
+    @PostMapping("/update-status")
+    ApiResponse<?> updateStatus(@RequestBody UpdateStatusRequest orderRequest) {
+        return orderService.updateOrderStatus(orderRequest);
     }
 }

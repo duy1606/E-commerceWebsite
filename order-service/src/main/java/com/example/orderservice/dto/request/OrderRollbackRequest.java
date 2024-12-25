@@ -1,4 +1,4 @@
-package com.example.orderservice.vnpay.dto;
+package com.example.orderservice.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PaymentRequest {
+public class OrderRollbackRequest {
     String orderID;
-    float amount;
 }
